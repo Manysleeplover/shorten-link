@@ -1,20 +1,25 @@
 package ru.romanov.currency.parser.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+import ru.romanov.currency.parser.service.LinkSearcherService;
 import ru.romanov.currency.parser.service.ShortenerService;
 
-@Controller
+@RestController("/")
 public class ShortenerController {
 
-    @Autowired
-    private ShortenerService shortenerService;
+    private final ShortenerService shortenerService;
 
-    @GetMapping("/")
-    public String shortenLink(@RequestParam(name = "link") String link) {
-        System.out.println(shortenerService.shorten() + link);
-        return "link";
+    @Autowired
+    public ShortenerController(ShortenerService shortenerService, LinkSearcherService linkSearcherService) {
+        this.shortenerService = shortenerService;
     }
+
+    @GetMapping("get/{link}")
+    public String getLink(@PathVariable String link) {
+        return "localhost:8080/" + shortenerService.processLink(link);
+    }
+
 }
